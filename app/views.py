@@ -76,7 +76,7 @@ def page(url_thread_id):
 # Database Test page
 @app.route('/test')
 def test():
-	return(str(Posts.query_all()))
+	return(str(posts.query_all()))
 
 #query the threads dict to find the title 
 def get_title(threadid):
