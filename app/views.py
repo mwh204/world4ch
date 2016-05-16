@@ -14,13 +14,21 @@ c1 = conn.cursor()
 c1.execute('SELECT * FROM threads ORDER BY lastbumptime DESC;')
 thread_query = c1.fetchall()
 
+#cuts off the title in the index if it is too long
+#this is necessary due to a couple of spam posts on /prog/ that skewed(?) the html table
+def cutoff_title(title, cutoff):
+    if len(title) > cutoff:
+        c = (cutoff / 2) - 2
+        return title[:c] + '....' + title[len(title)-c:]
+    return title
+
 # insert thread list into dictionary
 threads = []
 for row in thread_query:
 	threads.append(
 		{
 			'threadid' : row[0],
-			'title' : row[1],
+			'title' : cutoff_title(row[1], 256),
 			'board' : row[2],
 			'firstposttime' : row[3],
 			'lastposttime' : row[4],
@@ -67,6 +75,7 @@ def page(url_thread_id):
 def test():
 	return(str(Posts.query_all()))
 
+#query the threads dict to find the title 
 def get_title(threadid):
     for entry in threads:
         if entry['threadid'] == threadid:
