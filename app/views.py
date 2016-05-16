@@ -60,9 +60,15 @@ def page(url_thread_id):
 			}
 		)
 	
-	return render_template('thread.html', board="prog", title="Example Thread", posts=posts)
+	return render_template('thread.html', board="prog", title=get_title(url_thread_id), posts=posts)
 
 # Database Test page
 @app.route('/test')
 def test():
 	return(str(Posts.query_all()))
+
+def get_title(threadid):
+    for entry in threads:
+        if entry['threadid'] == threadid:
+                return entry['title']
+    return 'Unknown Title'
