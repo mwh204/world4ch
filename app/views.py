@@ -5,6 +5,14 @@ from app import app
 import sqlite3
 from collections import defaultdict
 
+#cuts off the title in the index if it is too long
+#this is necessary due to a couple of spam posts on /prog/ that skewed(?) the html table
+def cutoff_title(title, cutoff):
+    if len(title) > cutoff:
+        c = (cutoff / 2) - 2
+        return title[:c] + '....' + title[len(title)-c:]
+    return title
+
 # connect to the database to store image metadata
 db_fname = "db.sqlite"
 
@@ -13,14 +21,6 @@ conn = sqlite3.connect(db_fname)
 c1 = conn.cursor()
 c1.execute('SELECT * FROM threads ORDER BY lastbumptime DESC;')
 thread_query = c1.fetchall()
-
-#cuts off the title in the index if it is too long
-#this is necessary due to a couple of spam posts on /prog/ that skewed(?) the html table
-def cutoff_title(title, cutoff):
-    if len(title) > cutoff:
-        c = (cutoff / 2) - 2
-        return title[:c] + '....' + title[len(title)-c:]
-    return title
 
 # insert thread list into dictionary
 threads = []
@@ -41,7 +41,10 @@ for row in thread_query:
 @app.route('/')
 @app.route('/index')
 def index():
-	return render_template('index.html', board="prog", title="Programming", threads=threads)
+    if index.indx is None:
+        index.indx = render_template('index.html', board="prog", title="Programming", threads=threads)
+    return index.indx
+index.indx = None
 
 # threads page, figure out which thread to display from URL
 @app.route('/thread/<int:url_thread_id>')
