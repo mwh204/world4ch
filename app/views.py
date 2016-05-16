@@ -33,8 +33,7 @@ for row in thread_query:
 @app.route('/')
 @app.route('/index')
 def index():
-	
-	return render_template('index.html', board="sjis", title="Shift JIS Art", threads=threads)
+	return render_template('index.html', board="prog", title="Programming", threads=threads)
 
 # threads page, figure out which thread to display from URL
 @app.route('/thread/<int:url_thread_id>')
@@ -61,7 +60,7 @@ def page(url_thread_id):
 			}
 		)
 	
-	return render_template('thread.html', board="sjis", title="Example Thread", posts=posts)
+	return render_template('thread.html', board="prog", title="Example Thread", posts=posts)
 
 # Database Test page
 @app.route('/test')
